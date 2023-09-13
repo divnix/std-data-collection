@@ -4,27 +4,28 @@
 }: let
   inherit (inputs) nixpkgs std;
   inherit (inputs.std.lib) cfg;
-  l = nixpkgs.lib // builtins;
+
+  inherit (nixpkgs.lib) recursiveUpdate stringsWithDeps;
 in {
-  adrgen = cfg.adrgen {
+  adrgen = recursiveUpdate cfg.adrgen {
     data = import ./adrgen.nix;
   };
-  editorconfig = cfg.editorconfig {
+  editorconfig = recursiveUpdate cfg.editorconfig {
     data = import ./editorconfig.nix;
     hook.mode = "copy"; # already useful before entering the devshell
   };
-  conform = cfg.conform {
+  conform = recursiveUpdate cfg.conform {
     data = import ./conform.nix;
   };
-  lefthook = cfg.lefthook {
+  lefthook = recursiveUpdate cfg.lefthook {
     data = import ./lefthook.nix;
   };
-  mdbook = cfg.mdbook {
+  mdbook = recursiveUpdate cfg.mdbook {
     data = import ./mdbook.nix;
     hook.mode = "copy"; # let CI pick it up outside of devshell
     packages = [std.packages.mdbook-kroki-preprocessor];
   };
-  treefmt = cfg.treefmt {
+  treefmt = recursiveUpdate cfg.treefmt {
     data = import ./treefmt.nix;
     packages = [
       nixpkgs.alejandra
@@ -32,11 +33,11 @@ in {
       nixpkgs.nodePackages.prettier-plugin-toml
       nixpkgs.shfmt
     ];
-    devshell.startup.prettier-plugin-toml = l.stringsWithDeps.noDepEntry ''
-      export NODE_PATH=${nixpkgs.nodePackages.prettier-plugin-toml}/lib/node_modules:$NODE_PATH
+    devshell.startup.prettier-plugin-toml = stringsWithDeps.noDepEntry ''
+      export NODE_PATH=${nixpkgs.nodePackages.prettier-plugin-toml}/lib/node_modules:''${NODE_PATH-}
     '';
   };
-  githubsettings = cfg.githubsettings {
+  githubsettings = recursiveUpdate cfg.githubsettings {
     data = import ./githubsettings.nix;
   };
 }
