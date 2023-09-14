@@ -26,16 +26,13 @@ in {
     packages = [std.packages.mdbook-kroki-preprocessor];
   };
   treefmt = recursiveUpdate cfg.treefmt {
-    data = import ./treefmt.nix;
+    data = import ./treefmt.nix {inherit (nixpkgs.nodePackages) prettier-plugin-toml;};
     packages = [
       nixpkgs.alejandra
       nixpkgs.nodePackages.prettier
       nixpkgs.nodePackages.prettier-plugin-toml
       nixpkgs.shfmt
     ];
-    devshell.startup.prettier-plugin-toml = stringsWithDeps.noDepEntry ''
-      export NODE_PATH=${nixpkgs.nodePackages.prettier-plugin-toml}/lib/node_modules:''${NODE_PATH-}
-    '';
   };
   githubsettings = recursiveUpdate cfg.githubsettings {
     data = import ./githubsettings.nix;

@@ -1,4 +1,4 @@
-{
+{prettier-plugin-toml}: {
   formatter = {
     nix = {
       command = "alejandra";
@@ -6,7 +6,7 @@
     };
     prettier = {
       command = "prettier";
-      options = ["--plugin" "prettier-plugin-toml" "--write"];
+      options = ["--plugin" "${prettier-plugin-toml}/lib/node_modules/prettier-plugin-toml/lib/api.js" "--write"];
       includes = [
         "*.css"
         "*.html"
